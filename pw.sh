@@ -39,8 +39,9 @@ create () {
 ################################################################################
 get () {
     echo "get function";
-    if [ -f $filename ]; then
-       git checkout $filename
+    git checkout $filename.asc
+    if [ -f $filename.asc ]; then
+       gpg -d $filename.asc > $filename
     else
        echo "$filename Does not exist!"
        exit
