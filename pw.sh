@@ -91,7 +91,7 @@ replace () {
 ################################################################################
 help () {
     echo "pw [command] [pwfile] [site]"
-    echo "Example: pw -c passwd.gpg amazon.ca"
+    echo "Example: pw -c passwd amazon.ca"
     echo "c = create"
     echo "g = get"
     echo "r = replace"
@@ -102,27 +102,46 @@ help () {
 # Main
 #
 ################################################################################
+# create the simple form first
+command=$(basename "$0")
+
+if [ ! -f ./pget ]; then
+    ln -s ./pw.sh ./pget 
+fi
+
+if [ ! -f ./pset ]; then
+    ln -s ./pw.sh ./pset 
+fi
 
 #-------------------------------------------------------------------------------
 # Set paramaters for pget
-if [ $0 == "pget" ];then
-   command="-c"    
-    filename=$1
-    site=$2
+echo "executing from:$command" 
 
-    if [ "$#" -ne 3 ] && [ "$#" -ne 4 ]; then
-	echo "!!!!!!!!!!!!!!!!!!!!!! Error: We need 3 or 4 paramaters"
-	echo "Example: pget passwd amazon.ca userforencrypt"
-	echo "or: pw.sh passwd amazon.ca"
-	exit 1
+if [ $command == "pget" ]; then
+    if [ $command == "pget" ]; then
+        command="-g"
+    fi
+    if [ $command == "pset" ]; then
+        command="-c"
+    fi
+    filename="$USER"pw
+    site=$1
+
+    if [ "$#" -lt 1 ]; then
+	    echo "!Error: We need 2 paramaters got: $#"
+	    echo "Example: pget amazon.ca userforencrypt"
+        echo "or: pw.sh passwd amazon.ca (Looks for the users key)"
+	    exit 1
     fi
     
     # Check if the user is included
     if [ "$#" -eq 3 ]; then
-	myrecp=$3
+	    myrecp=$2
     else
-	myrecp=$USER
+	    myrecp=$USER
     fi
+
+    echo "Here is the command: filename: $filename command:$command site:$site myrecp: $myrecp"
 #-------------------------------------------------------------------------------
 # Set paramaters for default
 else
@@ -140,9 +159,9 @@ else
     
     # Check if the user is included
     if [ "$#" -eq 4 ]; then
-	myrecp=$4
+        myrecp=$4
     else
-	myrecp=$USER
+	    myrecp=$USER
     fi
 fi
 
